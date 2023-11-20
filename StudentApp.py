@@ -5,14 +5,9 @@ import os
 import joblib
 import sklearn
 from sklearn.kernel_ridge import KernelRidge
+import numpy as np
 
 
-
-
-def generate_graph(selected_lines):
-    if not selected_lines:
-        st.warning('Veuillez sélectionner au moins une ligne pour générer le graphique.')
-        return
 
 
 model = joblib.load('resources/finalGrade_prediction_model.joblib')
@@ -160,6 +155,18 @@ if st.button('Evaluate'):
 
     st.table(st.session_state["df_students"])
 
-    st.scatter_chart(st.session_state["df_students"][['gap', 'FinalGrade']])
 
+    fig, ax = plt.subplots(figsize=(10, 6))
 
+    scatter = ax.scatter(st.session_state["df_students"]['StudentID'], st.session_state["df_students"]['FinalGrade'], label='FinalGrade', s=50)
+    scatter = ax.scatter(st.session_state["df_students"]['StudentID'], st.session_state["df_students"]['prediction'], marker='x', label='Prediction', s=50)
+
+    ax.set_title('Scatter Plot of FinalGrade and Prediction')
+    ax.set_xlabel('StudentID')
+    ax.set_ylabel('Grades')
+    ax.set_yticks(np.arange(0, 21))
+    ax.axhline(0, color='black',linewidth=0.5)
+
+    ax.legend()
+
+    st.pyplot(fig)
